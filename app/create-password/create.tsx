@@ -29,6 +29,9 @@ export default function CreatePass() {
   const token = searchParams.get('access_token');
 
 
+  const handleNaviagetion=()=>{
+    router.push('/');
+  }
   useEffect(() => {
     const fetchUser = async () => {
       if (!token) {
@@ -151,8 +154,10 @@ if (isLoading) {
         <button disabled={password!=confirmPassword} type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">Creer</button>
 
         <div className="w-full flex justify-center space-x-1">
-         <div className="mb-4 font-bold text-white text-base text-center ">
-            Creer votre mot de passe
+        <div className="mb-4 font-bold text-white text-base text-center ">
+            <div onClick={()=> handleNaviagetion()} className="underline cursor-pointer">
+              Retourner à l'accueil
+            </div>
           </div> 
            
         </div>

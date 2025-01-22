@@ -14,9 +14,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
    
   
-      <main className="flex-1 flex flex-col overflow-y-auto ">
+      <main className="flex-1 overflow-x-hidden flex flex-col overflow-y-auto ">
       <Navbar />
-        <div className="p-6">
+        <div className="p-6 sm:pb-0 pb-96">
             {children}
         </div></main>
     </div>

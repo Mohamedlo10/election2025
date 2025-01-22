@@ -5,6 +5,7 @@ export type Candidat = {
    prenom: string; 
    count: string;  
    logo:string;
+   promo:string;
    departement:string
  };
  

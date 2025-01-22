@@ -20,9 +20,9 @@ const ConfirmDialog: React.FC<ConfirmDeleteDialogProps> = ({ onConfirm, onCancel
       <AlertDialogContent>
         <div className='font-bold h-10 items-center justify-start flex -p-8 w-full border-b '>Confirmation</div>
         <p>{message}</p>
-        <AlertDialogFooter>
-          <Button onClick={onCancel}>Non</Button>
-          <Button className='bg-[#36a37b]' onClick={onConfirm} variant="destructive">
+        <AlertDialogFooter className='flex w-full items-center justify-center flex-row gap-8'>
+          <Button className='w-20' onClick={onCancel}>Non</Button>
+          <Button className='bg-[#36a37b] w-20' onClick={onConfirm} variant="destructive">
             Oui
           </Button>
         </AlertDialogFooter>
