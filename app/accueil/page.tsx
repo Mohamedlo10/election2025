@@ -33,7 +33,7 @@ export default function Page() {
     }))
   };
   async function fetchCandidates() {
-    const user = (await supabase.auth.getSession()).data.session?.user.id;
+    const user = supabase.auth.getSession();
     console.log(user)
     if (!user) {
     setIsLoading(false)
