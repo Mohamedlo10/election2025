@@ -5,11 +5,10 @@ const supabase = createClient();
 
 export const userConnection = async (myeEmail: string) => {
   try {
-    const redirectUrl = `${window.location.origin}/accueil`; 
     const { data, error } = await supabase.auth.signInWithOtp({
       email: myeEmail,
       options: {
-        emailRedirectTo: redirectUrl,
+        emailRedirectTo: "https://election2025.vercel.app/accueil",
       },
     });
     return { data, error };

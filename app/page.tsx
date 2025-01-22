@@ -61,7 +61,6 @@ export default function Home() {
     const checkUserSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data?.session) {
-        // Redirigez l'utilisateur connecté vers une autre page
         router.push('/accueil');
       }
     };
@@ -125,7 +124,7 @@ if (isLoading) {
         <div className='flex w-full items-center gap-7 flex-col'>
           <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail de confirmation a été envoyé à votre boîte mail. 
           Veuillez vérifier votre courrier pour valider votre compte.</div>
-          <CalendarClock />
+          <CalendarClock className='text-white' />
         </div>
 
     )}
