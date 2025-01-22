@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
-import { getCandidates, incrementVote } from "../api/auth/query";
+import { getCandidates } from "../api/auth/query";
 
 const override: CSSProperties = {
     display: "block",
@@ -69,7 +69,7 @@ export default function Page() {
 
   const handleVote = async (candidateId:string) => {
     setIsLoading(true)
-    const userId = (await supabase.auth.getSession()).data.session?.user.id;
+    const userId = await supabase.auth.getSession();
     console.log(userId)
     if (!userId) {
     setIsLoading(false)
@@ -77,7 +77,7 @@ export default function Page() {
       router.push("/");
       return;
     }
-    const { error } = await incrementVote(candidateId, userId);
+   /*  const { error } = await incrementVote(candidateId, userId);
     if (error) {
     setIsLoading(false)
 
@@ -87,7 +87,7 @@ export default function Page() {
       alert("Vote successful!");
       fetchCandidates();
       router.refresh();
-    }
+    } */
   };
 
   
