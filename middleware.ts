@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/accueil/:path*','create-password'],
+  matcher: ['/accueil/:path*','/create-password'],
 };
 
 
