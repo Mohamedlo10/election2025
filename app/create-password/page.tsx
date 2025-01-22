@@ -1,6 +1,6 @@
 'use client'
 import { createClient } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CSSProperties, useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import BeatLoader from "react-spinners/BeatLoader";
@@ -22,9 +22,30 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClient();
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
   const [type, setType] = useState('password');
   const [typeC, setTypeC] = useState('password');
+  const searchParams = useSearchParams();
+  const token = searchParams.get('access_token');
 
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!token) {
+        setMessage("Token manquant dans l'URL.");
+        return;
+      }
+
+      const { data: user, error } = await supabase.auth.getUser(token);
+      if (error || !user) {
+        setMessage("Erreur lors de la récupération de l'utilisateur.");
+      } else {
+        setEmail(user.user.email || '');
+      }
+    };
+
+    fetchUser();
+  }, [token]);
 
 
   const handleToggle = () => {
@@ -69,17 +90,6 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-
-  }, []);
-  
-
- useEffect(() => {
-  // router.push('/accueil');
-  const storedPassword = (document.getElementById('password') as HTMLInputElement)?.value;
-
-  if (storedPassword) setPassword(storedPassword);
-}, []);
 
 if (isLoading) {
     return (
