@@ -201,6 +201,7 @@ if (isLoading) {
         required
          className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" placeholder="examples@gmail.com" />
         </div>
+        <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">S'inscrire</button>
 
           <div className="w-full flex justify-center space-x-1">
           <div className="mb-4 mt-4 font-bold text-white text-base text-center ">
@@ -211,7 +212,6 @@ if (isLoading) {
           </div> 
             
           </div>
-        <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">S'inscrire</button>
 
         </form>
       ):(

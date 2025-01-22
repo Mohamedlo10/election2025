@@ -35,7 +35,7 @@ export default function Page() {
     }
   };
   const   handleToggleConfirmP = () => {
-    if (type === "password") {
+    if (typeC === "password") {
       setTypeC("text");
     } else {
       setTypeC("password");
@@ -50,12 +50,20 @@ export default function Page() {
       const { error } = await createPassword(password);
       if (error) {
         setMessage("Erreur lors de la création du mot de passe.");
+        alert("Erreur lors de la création du mot de passe.");
+        setIsLoading(false);
+
+
       } else {
         setMessage("Mot de passe créé avec succès !");
+        alert("Mot de passe créé avec succès !");
+        setIsLoading(false);
         router.push('/');
       }
     } catch (err) {
       setMessage("Une erreur inattendue s'est produite.");
+      setIsLoading(false);
+
     } finally {
       setIsLoading(false);
     }
