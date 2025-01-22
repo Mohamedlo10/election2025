@@ -33,14 +33,14 @@ export default function Page() {
     }))
   };
   async function fetchCandidates() {
-   /*  const user = (await supabase.auth.getSession()).data.session?.user.id;
+    const user = (await supabase.auth.getSession()).data.session?.user.id;
     console.log(user)
     if (!user) {
     setIsLoading(false)
       alert("Vous n'etes pas connecter!");
       router.push("/");
       return;
-    } */
+    }
     const data:any= await getCandidates();
     if (error) {
       setError(error);
