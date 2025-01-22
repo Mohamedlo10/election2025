@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabaseClient';
 import { CalendarClock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { CSSProperties, useEffect, useState } from 'react';
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import BeatLoader from "react-spinners/BeatLoader";
-import { userConnection, verifyVoterEmail } from './api/auth/query';
+import { sendSignupEmail, userConnection, verifyVoterEmail } from './api/auth/query';
 const override: CSSProperties = {
   display: "block",
   margin: "0 auto",
@@ -12,20 +13,69 @@ const override: CSSProperties = {
 };
 
 
-
 export default function Home() {
 
   const router = useRouter()
   const [email, setemail] = useState('');
+  const [emailIns, setemailIns] = useState('');
   const [envoyer, setEnvoyer] = useState(false);
+  const [inscription, setinscription] = useState(false);
+  const [password, setPassword] = useState('');
   const [color] = useState("#ffffff");
   const [isLoading, setIsLoading] = useState(false);
   const supabase = createClient();
+  const [message, setMessage] = useState('');
+  const [icon, setIcon] = useState(<AiOutlineEyeInvisible />);
+  const [type, setType] = useState('password');
 
+
+
+  const handleToggle = () => {
+    if (type === "password") {
+      setIcon(<AiOutlineEye />);
+      setType("text");
+    } else {
+      setIcon(<AiOutlineEyeInvisible />);
+      setType("password");
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    console.log("inscription")
+
+    try {
+      // Vérifiez si l'email existe dans la table des votants
+      const { exists, error: verifyError } = await verifyVoterEmail(emailIns);
+      if (verifyError) {
+        setMessage("Erreur lors de la vérification de l'email.");
+        return;
+      }
+      if (!exists) {
+        setMessage("Votre email n'est pas autorisé à s'inscrire.");
+        return;
+      }
+
+      const { error: emailError } = await sendSignupEmail(emailIns);
+      if (emailError) {
+        setMessage("Erreur lors de l'envoi de l'email de confirmation.");
+      } else {
+        setMessage("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
+        setEnvoyer(true);
+
+      }
+    } catch (err) {
+      setMessage("Une erreur inattendue s'est produite.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
    const handleLogin = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log("login")
   
     try {
       console.log(email)
@@ -42,13 +92,14 @@ export default function Home() {
         return;
       }
   
-      const { data, error } = await userConnection(email);
+      const { data, error } = await userConnection(email,password);
       if (error) {
         console.error(error.message);
-        alert("Failed to send magic link.");
+        alert("email ou mot de passe incorrecte");
       } else if (data) {
         localStorage.setItem("user_session", JSON.stringify(data.user));
-        setEnvoyer(true);
+        router.push('accueil');
+        //a faire
       }
     } catch (err: any) {
       console.error(err.message || "An unexpected error occurred.");
@@ -58,21 +109,16 @@ export default function Home() {
     }
   };
   useEffect(() => {
-    const checkUserSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data?.session) {
-        router.push('/accueil');
-      }
-    };
-    checkUserSession();
+
   }, []);
   
 
  useEffect(() => {
-  // Synchronisez les champs avec l'état local lors du montage
   const storedMAil = (document.getElementById('email') as HTMLInputElement)?.value;
   // router.push('/accueil');
+  const storedPassword = (document.getElementById('password') as HTMLInputElement)?.value;
 
+  if (storedPassword) setPassword(storedPassword);
   if (storedMAil) setemail(storedMAil);
 }, []);
 
@@ -98,12 +144,18 @@ if (isLoading) {
      <section className=" sm:w-full h-screen overflow-hidden bg-[#36a37b] flex justify-center items-center lg:justify-evenly lg:py-6">
      <div className="flex flex-col bg-[#3f3d56] rounded-xl space-y-2 p-6 lg:p-50 my-4 lg:my-0">
      <div className="text-center text-white">
+      {!inscription?(
           <div className="w-full text-center font-bold text-2xl border-b border-solid p-6 font-quick">Connexion</div>
+
+      ):(
+        <div className="w-full text-center font-bold text-2xl border-b border-solid p-6 font-quick">Inscription</div>
+
+      )}
           <div className='pt-4 pb-8 text-center font-bold'>
             Plateforme de vote de l'AMEES
           </div>
         </div>
-        {!envoyer?(<><form  onSubmit={handleLogin} className="flex flex-col space-y-6">
+        {!inscription?(<><form  onSubmit={handleLogin} className="flex flex-col space-y-6">
         <div className="relative flex flex-col items-center space-y-2">
             <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
             <input type="email"
@@ -112,22 +164,69 @@ if (isLoading) {
             required
              className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" placeholder="examples@gmail.com" />
         </div>
-        
+        <div className="relative flex flex-col items-center space-y-2">
+            <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
+            <input type={type}
+               placeholder="Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+             className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" />
+             <span className='absolute p-1 w-fit rounded-full h-fit top-1/4 right-4 cursor-pointer hover:bg-slate-500'  onClick={handleToggle}>
+                {type === 'password' ? <AiOutlineEyeInvisible size={28} /> : <AiOutlineEye size={28} />}
+              </span>
 
+        </div>
+        
         <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">Connexion</button>
 
         <div className="w-full flex justify-center space-x-1">
-            <p className="text-slate-400 text-base font-quick">Mail pour vous connectez.</p>
+         <div className="mb-4 font-bold text-white text-base text-center ">
+            Vous avez pas de compte ?{" "}
+            <div onClick={()=>setinscription(true)} className="underline cursor-pointer">
+              S'inscrire
+            </div>
+          </div> 
            
         </div>
-    </form></>):(
-        <div className='flex w-full items-center gap-7 flex-col'>
-          <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail de confirmation a été envoyé à votre boîte mail. 
-          Veuillez vérifier votre courrier pour valider votre compte.</div>
-          <CalendarClock className='text-white' />
+    </form></>):(<>
+
+      {!envoyer?(
+        <form onSubmit={handleSignup}  className="flex flex-col space-y-6">
+        <div className="relative flex flex-col items-center space-y-2">
+        <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
+        <input type="email"
+        value={emailIns}
+        onChange={(e) => setemailIns(e.target.value)}
+        required
+         className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" placeholder="examples@gmail.com" />
         </div>
 
-    )}
+          <div className="w-full flex justify-center space-x-1">
+          <div className="mb-4 mt-4 font-bold text-white text-base text-center ">
+            Vous avez deja un compte ?{" "}
+            <div onClick={()=>setinscription(false)} className="underline cursor-pointer">
+              Se connecter
+            </div>
+          </div> 
+            
+          </div>
+        <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">S'inscrire</button>
+
+        </form>
+      ):(
+        <div className='flex w-full items-center gap-7 flex-col'>
+        <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail de confirmation a été envoyé à votre boîte mail. 
+        Veuillez vérifier votre courrier pour valider votre compte.</div>
+        <CalendarClock className='text-white' />
+      </div>
+
+      )
+
+      }
+       
+
+       </>)}
  </div> 
     <img src="/undraw_voting_nvu7.svg" alt="" className="hidden  lg:block" />
     </section>

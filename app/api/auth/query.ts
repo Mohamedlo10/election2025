@@ -3,17 +3,41 @@ import { createClient } from "@/lib/supabaseClient";
 
 const supabase = createClient();
 
-export const userConnection = async (myeEmail: string) => {
+export const sendSignupEmail = async (myeEmail: string) => {
   try {
     const { data, error } = await supabase.auth.signInWithOtp({
       email: myeEmail,
       options: {
-        emailRedirectTo: "https://election2025.vercel.app/accueil",
+        emailRedirectTo: "https://election2025.vercel.app/create-password",
       },
     });
     return { data, error };
   } catch (err) {
     throw err;
+  }
+};
+
+export const createPassword = async (password: string) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      password,
+    });
+    return { data, error };
+  } catch (err:any) {
+    return { data: null, error: err.message };
+  }
+};
+
+
+export const userConnection = async (email: string, password: string) => {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { data, error };
+  } catch (err:any) {
+    return { data: null, error: err.message };
   }
 };
 
