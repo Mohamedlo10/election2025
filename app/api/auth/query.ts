@@ -1,10 +1,11 @@
+import { sendMail } from "@/lib/sendmail";
 import { createClient } from "@/lib/supabaseClient";
 import { Resend } from "resend";
 const supabase = createClient();
 
 
 export const sendSignupEmail = async (email: string) => {
-  const resend = new Resend((process.env.NEXT_PUBLIC_RESEND_API_KEY));
+ /* const resend = new Resend((process.env.NEXT_PUBLIC_RESEND_API_KEY));
   const passwordRandom = generateRandomPassword(); 
   try {
     const { data, error } = await supabase.auth.signUp({
@@ -15,6 +16,7 @@ export const sendSignupEmail = async (email: string) => {
     if (error) {
       return { data: null, error: error.message };
     }
+    console.log('Envoi de l\'email de confirmation');
    const response = await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: email,
@@ -26,7 +28,19 @@ export const sendSignupEmail = async (email: string) => {
     return { data: data, error: null };
   } catch (err: any) {
     return { data: null, error: err.message };
-  }
+  }*/
+    const response = await sendMail({
+      email: "mouhamedlo15036@gmail.com",
+      subject: 'Test node mailer',
+      text: 'Hello world',
+    });
+    console.log('Reponse de l\'envoi de l\'email',response);
+    if (response?.messageId) {
+      console.log('Message sent: %s', response.messageId);
+      alert('Application Submitted Successfully.');
+    } else {
+      alert('Failed To send application.');
+    }
 };
 
 

@@ -69,6 +69,7 @@ export default function Home() {
 
       }
     } catch (err) {
+      console.error(err);
       setMessage("Une erreur inattendue s'est produite.");
     } finally {
       setIsLoading(false);
