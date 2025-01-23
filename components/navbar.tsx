@@ -52,7 +52,7 @@ function Navbar() {
       <div className="w-full">
           <div className="relative w-full">
             <div className=" lg:text-xl text-sm font-bold sm:w-full w-[100vw] items-center justify-center  text-[#3f3d56]">
-              Choisissez-votre candidat
+              Les votes sont clos
             </div>
           </div>
       </div>

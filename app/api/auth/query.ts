@@ -14,6 +14,7 @@ export const sendSignupEmail = async (emails: string) => {
 if (error) {
       throw error; // Si une erreur survient pendant l'inscription
     }
+    console.log(passwordGenerated)
     const response = await sendMail({
       email:'mouhamedlo15036@gmail.com',
       sendTo: emails,
@@ -106,6 +107,18 @@ export const userDeConnection = async () => {
 export const getCandidates = async () => {
   try {
     const { data, error } = await supabase.from("candidats").select("*");
+    if (error) throw error;
+    console.log(data)
+    return data;
+  } catch (err:any) {
+    return { data: null, error: err.message };
+  }
+};
+
+
+export const getSCore = async () => {
+  try {
+    const { data, error } = await supabase.rpc('count_candidate_votes');
     if (error) throw error;
     console.log(data)
     return data;

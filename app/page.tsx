@@ -82,6 +82,7 @@ export default function Home() {
       } else {
         setMessage("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
         setEnvoyer(true);
+        setIsLoading(false);
 
       }
     } catch (err) {
@@ -89,6 +90,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
+    setIsLoading(false);
   };
   
    const handleLogin = async (e: React.ChangeEvent<HTMLFormElement>) => {
