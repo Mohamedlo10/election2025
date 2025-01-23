@@ -71,11 +71,13 @@ export default function CreatePass() {
     setIsLoading(true);
 
     try {
-      const { error } = await createPassword(password);
+      const { error } = await createPassword(password  || confirmPassword);
       if (error) {
-        setMessage("Erreur lors de la création du mot de passe.");
-        alert("Erreur lors de la création du mot de passe.");
+        setMessage("Erreur lors de la création du mot de passe. ");
+        alert("Erreur lors de la création du mot de passe. essayer de renvoyer un mail");
         setIsLoading(false);
+        router.push('/');
+
 
 
       } else {

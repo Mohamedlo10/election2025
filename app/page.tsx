@@ -18,6 +18,9 @@ export default function Home() {
   const router = useRouter()
   const [email, setemail] = useState('');
   const [emailIns, setemailIns] = useState('');
+  const [passwordIns, setpasswordIns] = useState('');
+  
+  const [confirmPassword, setconfirmPassword] = useState('');
   const [envoyer, setEnvoyer] = useState(false);
   const [inscription, setinscription] = useState(false);
   const [password, setPassword] = useState('');
@@ -27,7 +30,7 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [icon, setIcon] = useState(<AiOutlineEyeInvisible />);
   const [type, setType] = useState('password');
-
+  const [typeC, setTypeC] = useState('password');
 
 
   const handleToggle = () => {
@@ -39,7 +42,13 @@ export default function Home() {
       setType("password");
     }
   };
-
+  const   handleToggleConfirmP = () => {
+    if (typeC === "password") {
+      setTypeC("text");
+    } else {
+      setTypeC("password");
+    }
+  };
   const handleNaviagetion=()=>{
       setinscription(false)
       setEnvoyer(false)
@@ -55,8 +64,11 @@ export default function Home() {
       const { exists, error: verifyError } = await verifyVoterEmail(emailIns);
       if (verifyError) {
         setMessage("Erreur lors de la vérification de l'email. Reessayer d'envoyer un mail");
-        setinscription(true)
+        setinscription(false)
         setEnvoyer(false)
+        setpasswordIns('')
+        setconfirmPassword('')
+        setemailIns('')
         return;
       }
       if (!exists) {
@@ -64,12 +76,13 @@ export default function Home() {
         return;
       }
 
-      const { error: emailError } = await sendSignupEmail(emailIns);
-      if (emailError) {
+      const { data  } = await sendSignupEmail(emailIns,passwordIns);
+      if (!data) {
         setMessage("Erreur lors de l'envoi de l'email de confirmation.");
       } else {
         setMessage("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
-        setEnvoyer(true);
+        alert('Inscription reussit veuillez vous connecter')
+        setEnvoyer(false);
 
       }
     } catch (err) {
@@ -208,6 +221,33 @@ if (isLoading) {
         required
          className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" placeholder="examples@gmail.com" />
         </div>
+        <div className="relative flex flex-col items-center space-y-2">
+            <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
+            <input type={type}
+               placeholder="Mot de passe" 
+            value={passwordIns}
+            onChange={(e) => setpasswordIns(e.target.value)}
+            required
+             className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" />
+             <span className='absolute p-1 w-fit rounded-full h-fit top-1/4 right-4 cursor-pointer hover:bg-slate-500'  onClick={handleToggle}>
+                {type === 'password' ? <AiOutlineEyeInvisible size={28} /> : <AiOutlineEye size={28} />}
+              </span>
+
+        </div>
+        <div className="relative flex flex-col items-center space-y-2">
+            <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
+            <input type={typeC}
+               placeholder="Confirmer mot de passe" 
+            value={confirmPassword}
+            onChange={(e) => setconfirmPassword(e.target.value)}
+            required
+             className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" />
+             <span className='absolute p-1 w-fit rounded-full h-fit top-1/4 right-4 cursor-pointer hover:bg-slate-500'  onClick={handleToggleConfirmP}>
+                {typeC === 'password' ? <AiOutlineEyeInvisible size={28} /> : <AiOutlineEye size={28} />}
+              </span>
+
+        </div>
+        
         <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">S'inscrire</button>
 
           <div className="w-full flex justify-center space-x-1">
