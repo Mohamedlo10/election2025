@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CSSProperties, useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import BeatLoader from "react-spinners/BeatLoader";
-import { sendSignupEmail, userConnection, verifyVoterEmail } from './api/auth/query';
+import { userConnection, verifyVoterEmail } from './api/auth/query';
 const override: CSSProperties = {
   display: "block",
   margin: "0 auto",
@@ -54,7 +54,7 @@ export default function Home() {
       setEnvoyer(false)
   }
 
-  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+ /*  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     console.log("inscription")
@@ -82,7 +82,7 @@ export default function Home() {
       } else {
         setMessage("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
         alert('Inscription reussit veuillez vous connecter')
-        setEnvoyer(false);
+        setEnvoyer(true);
 
       }
     } catch (err) {
@@ -90,7 +90,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }; */
   
    const handleLogin = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -210,9 +210,9 @@ if (isLoading) {
            
         </div>
     </form></>):(<>
-
+      {/* onSubmit={handleSignup} */}
       {!envoyer?(
-        <form onSubmit={handleSignup}  className="flex flex-col space-y-6">
+        <form   className="flex flex-col space-y-6">
         <div className="relative flex flex-col items-center space-y-2">
         <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
         <input type="email"
