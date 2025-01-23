@@ -54,7 +54,9 @@ export default function Home() {
       // Vérifiez si l'email existe dans la table des votants
       const { exists, error: verifyError } = await verifyVoterEmail(emailIns);
       if (verifyError) {
-        setMessage("Erreur lors de la vérification de l'email.");
+        setMessage("Erreur lors de la vérification de l'email. Reessayer d'envoyer un mail");
+        setinscription(true)
+        setEnvoyer(false)
         return;
       }
       if (!exists) {

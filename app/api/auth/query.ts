@@ -8,6 +8,7 @@ export const sendSignupEmail = async (myeEmail: string) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email: myeEmail,
       options: {
+        shouldCreateUser:true,
         emailRedirectTo: "https://election2025.vercel.app/create-password",
       },
     });
