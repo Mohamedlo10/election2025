@@ -27,7 +27,10 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const [icon, setIcon] = useState(<AiOutlineEyeInvisible />);
   const [type, setType] = useState('password');
-
+  const handleNaviagetion=()=>{
+    setEnvoyer(false)
+    setinscription(false)
+  }
 
 
   const handleToggle = () => {
@@ -216,9 +219,13 @@ if (isLoading) {
         </form>
       ):(
         <div className='flex w-full items-center gap-7 flex-col'>
-        <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail de confirmation a été envoyé à votre boîte mail. 
-        Veuillez vérifier votre courrier pour valider votre compte.</div>
+        <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail contenant votre mot de passe a été envoyé à votre boîte mail.</div>
         <CalendarClock className='text-white' />
+        <div className="mb-4 mt-4 font-bold text-white text-base text-center ">
+            <div onClick={()=> handleNaviagetion()} className="underline cursor-pointer">
+              Se connecter
+            </div>
+          </div> 
       </div>
 
       )

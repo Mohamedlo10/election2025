@@ -1,22 +1,45 @@
-
 import { createClient } from "@/lib/supabaseClient";
-
+import { Resend } from "resend";
 const supabase = createClient();
 
-export const sendSignupEmail = async (myeEmail: string) => {
+
+export const sendSignupEmail = async (email: string) => {
+  const resend = new Resend((process.env.NEXT_PUBLIC_RESEND_API_KEY));
+  const passwordRandom = generateRandomPassword(); 
   try {
-    const { data, error } = await supabase.auth.signInWithOtp({
-      email: myeEmail,
-      options: {
-        shouldCreateUser:true,
-        emailRedirectTo: "https://election2025.vercel.app/create-password",
-      },
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password: passwordRandom,
     });
-    return { data, error };
-  } catch (err) {
-    throw err;
+
+    if (error) {
+      return { data: null, error: error.message };
+    }
+   const response = await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'Votre mot de passe',
+        html: `<p>Voici votre mot de passe : <strong>${passwordRandom}</strong></p>`,
+      });
+      console.log('Reponse de l\'envoi de l\'email',response);
+  
+    return { data: data, error: null };
+  } catch (err: any) {
+    return { data: null, error: err.message };
   }
 };
+
+
+
+const generateRandomPassword = () => {
+  const charset = '0123456789';
+  let password = '';
+  for (let i = 0; i < 6; i++) {  
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
+};
+
 
 export const createPassword = async (password: string) => {
   try {
