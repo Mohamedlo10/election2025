@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CSSProperties, useEffect, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import BeatLoader from "react-spinners/BeatLoader";
-import { userConnection, verifyVoterEmail } from './api/auth/query';
+import { sendSignupEmail, userConnection, verifyVoterEmail } from './api/auth/query';
 const override: CSSProperties = {
   display: "block",
   margin: "0 auto",
@@ -54,7 +54,7 @@ export default function Home() {
       setEnvoyer(false)
   }
 
- /*  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     console.log("inscription")
@@ -76,12 +76,11 @@ export default function Home() {
         return;
       }
 
-      const { data  } = await sendSignupEmail(emailIns,passwordIns);
+      const { data  } = await sendSignupEmail(emailIns);
       if (!data) {
         setMessage("Erreur lors de l'envoi de l'email de confirmation.");
       } else {
         setMessage("Un email de confirmation a été envoyé. Veuillez vérifier votre boîte mail.");
-        alert('Inscription reussit veuillez vous connecter')
         setEnvoyer(true);
 
       }
@@ -90,7 +89,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }; */
+  };
   
    const handleLogin = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -210,9 +209,9 @@ if (isLoading) {
            
         </div>
     </form></>):(<>
-      {/* onSubmit={handleSignup} */}
+      
       {!envoyer?(
-        <form   className="flex flex-col space-y-6">
+        <form onSubmit={handleSignup} className="flex flex-col space-y-6">
         <div className="relative flex flex-col items-center space-y-2">
         <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
         <input type="email"
@@ -221,32 +220,7 @@ if (isLoading) {
         required
          className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" placeholder="examples@gmail.com" />
         </div>
-        <div className="relative flex flex-col items-center space-y-2">
-            <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
-            <input type={type}
-               placeholder="Mot de passe" 
-            value={passwordIns}
-            onChange={(e) => setpasswordIns(e.target.value)}
-            required
-             className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" />
-             <span className='absolute p-1 w-fit rounded-full h-fit top-1/4 right-4 cursor-pointer hover:bg-slate-500'  onClick={handleToggle}>
-                {type === 'password' ? <AiOutlineEyeInvisible size={28} /> : <AiOutlineEye size={28} />}
-              </span>
 
-        </div>
-        <div className="relative flex flex-col items-center space-y-2">
-            <img src="/undraw_voting_nvu7.svg" alt="" className="absolute w-10 h-8 top-1/3 left-4" />
-            <input type={typeC}
-               placeholder="Confirmer mot de passe" 
-            value={confirmPassword}
-            onChange={(e) => setconfirmPassword(e.target.value)}
-            required
-             className="rounded-lg bg-[#F5F5F5]  h-16 w-80 px-20 text-[#3f3d56] font-bold placeholder-slate-400 placeholder-text-lg placeholder:font-bold placeholder:font-quick" />
-             <span className='absolute p-1 w-fit rounded-full h-fit top-1/4 right-4 cursor-pointer hover:bg-slate-500'  onClick={handleToggleConfirmP}>
-                {typeC === 'password' ? <AiOutlineEyeInvisible size={28} /> : <AiOutlineEye size={28} />}
-              </span>
-
-        </div>
         
         <button type="submit" className="btn h-16 w-80 bg-[#50c59a] font-bold rounded-lg text-white text-base font-quick">S'inscrire</button>
 
@@ -264,7 +238,7 @@ if (isLoading) {
       ):(
         <div className='flex w-full items-center gap-7 flex-col'>
         <div className='h-24 max-w-72 text-white text-center font-bold'>Un e-mail de confirmation a été envoyé à votre boîte mail. 
-        Veuillez vérifier votre courrier pour valider votre compte.</div>
+        Veuillez vérifier votre courrier pour recuperer votre mot de passe.</div>
         <CalendarClock className='text-white' />
         <div className="mb-4 mt-4 font-bold text-white text-base text-center ">
             <div onClick={()=> handleNaviagetion()} className="underline cursor-pointer">

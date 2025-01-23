@@ -1,24 +1,43 @@
 
+import { sendMail } from "@/lib/sendMails";
 import { createClient } from "@/lib/supabaseClient";
 
 const supabase = createClient();
 
-export const sendSignupEmail = async (email: string,password:string) => {
+export const sendSignupEmail = async (emails: string) => {
+  const passwordGenerated=generateRandomPassword()
   try {
     const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
+      email: emails,
+      password: passwordGenerated,
     });
-
-    if (error) {
+if (error) {
       throw error; // Si une erreur survient pendant l'inscription
     }
+    const response = await sendMail({
+      email:'mouhamedlo15036@gmail.com',
+      sendTo: emails,
+      subject: 'votre mot de passe',
+      text: passwordGenerated,
+    });
+    console.log('Reponse de l\'envoi de l\'email',response);
+
+    
 
     return { data };
   } catch (err) {
     console.error('SignUp error:', err);
     throw err; // Lancer une erreur si quelque chose se passe mal
   }
+};
+
+const generateRandomPassword = () => {
+  const charset = '0123456789';
+  let password = '';
+  for (let i = 0; i < 6; i++) {  
+    password += charset.charAt(Math.floor(Math.random() * charset.length));
+  }
+  return password;
 };
 
 export const createPassword = async (password: string) => {
