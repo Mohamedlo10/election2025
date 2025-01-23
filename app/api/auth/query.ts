@@ -1,10 +1,9 @@
+import { resend } from "@/lib/resend";
 import { createClient } from "@/lib/supabaseClient";
-import { Resend } from "resend";
 const supabase = createClient();
 
 
 export const sendSignupEmail = async (email: string) => {
-  const resend = new Resend((process.env.NEXT_PUBLIC_RESEND_API_KEY));
   const passwordRandom = generateRandomPassword(); 
   try {
     const { data, error } = await supabase.auth.signUp({
